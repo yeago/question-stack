@@ -14,12 +14,12 @@
 				</span>
 			</div>
 			{% if user == object.comment.user and not object.accepted_answer_id == comment.pk %}
-			<div class="span-2 prepend-top">
+			<div class="span-2">
 				<a href="{% url stack_accepted_answer object.slug comment.pk %}">Make accepted answer</a>
 			</div>
 			{% endif %}
 			{% if object.accepted_answer_id == comment.pk %}
-			<div class="span-2 prepend-top" style="font-weight:bold;">
+			<div class="span-2" style="font-weight:bold;">
 				Accepted Answer
 			</div>
 			{% endif %}

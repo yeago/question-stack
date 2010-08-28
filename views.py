@@ -4,9 +4,13 @@ from django.template import RequestContext
 from django.http import Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 
+from django.views.generic.list_detail import object_list
+
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
+
+from django_view_count.models import View
 
 from stack import models as sm
 from stack import forms as sf
@@ -37,8 +41,12 @@ def add(request):
 	return render_to_response("stack/add.html",{'form': form, },\
 		context_instance=RequestContext(request))
 
+def question_list(request):
+	return object_list(request,sm.Question.objects.select_related('comment').order_by('-comment__submit_date'))
+
 def detail(request,slug):
 	instance = get_object_or_404(sm.Question,slug=slug)
+	View.objects.create_for_instance(instance,request)
 	return render_to_response("stack/question_detail.html",{'instance': instance},\
 		context_instance=RequestContext(request))
 

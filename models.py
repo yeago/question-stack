@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import comments
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
 
 from djangoratings.fields import RatingField
 from slugify import SlugifyUniquely
@@ -17,6 +18,9 @@ class Question(models.Model):
 
 	def __unicode__(self):
 		return self.title
+
+	def get_response_count(self):
+		return Comment.objects.filter(content_type=ContentType.objects.get_for_model(self),object_pk=self.pk).count()
 
 	def get_absolute_url(self):
 		return reverse("stack_question_detail",args=[self.slug])
