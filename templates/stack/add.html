@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="span-14">
+	<h2>Ask a question</h2>
+	<form action="." method="post">{% csrf_token %}
+		{% for field in form %}
+		<p>
+			{{ field.label_tag }}
+			{{ field }}<br />
+			{{ field.help_text }}
+			{{ field.errors }}
+		</p>
+		{% endfor %}
+		<input type="submit" name="submit" class="submit" value="Add Question" />
+	</form>
+</div>
+<div class="span-8 last prepend-top">
+	<h2>Important!</h2>
+	<p>When asking a question, make sure you state it fully but try to be brief.</p>
+	<h4>Good examples</h4>
+	<ul>
+		<li style="font-style:italic;">Can I twincast a twincast?</li>
+		<li style="font-style:italic;">Can I tutor up Erayo's Essence with Zur?</li>
+		<li style="font-style:italic;">Does double-strike double lifelink?</li>
+	</ul>
+
+	<h4>Bad examples</h4>
+	<ul>
+		<li style="font-style:italic;">Erayo + Zur?</li>
+		<li style="font-style:italic;">I have a question</li>
+		<li style="font-style:italic;">Painters servant question</li>
+		<li style="font-style:italic;">Can I do this?</li>
+	</ul>
+</div>
+{% endblock %}

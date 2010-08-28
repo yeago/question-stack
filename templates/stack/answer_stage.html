@@ -1,0 +1,82 @@
+{% load comments_plus_tags stack_tags comments wiki_tags tapped_tags deck_tags subscription_tags %}
+{% get_answer_list for object as comment_list %}
+<div class="comment-content">
+{% if comment_list %}
+<div id="comments" class="span-17">
+	{% for comment in comment_list %}
+	{% if comment.is_public %}
+	<div class="answer comment span-17 prepend-top{% if object.accepted_answer_id == comment.pk %} accepted-answer{% endif %}" id="c{{ comment.pk }}">
+		<div class="rating-box span-2" style="text-align:center;">
+			<div class="span-2">
+				Rating:<br />
+				<span style="font-size:30px !important;" href="#">
+					{{ comment.karma__count }}{% if user.is_authenticated %}<a href="" class="comment-karma-add">+</a>{% endif %}
+				</span>
+			</div>
+			{% if user == object.comment.user and not object.accepted_answer_id == comment.pk %}
+			<div class="span-2 prepend-top">
+				<a href="{% url stack_accepted_answer object.slug comment.pk %}">Make accepted answer</a>
+			</div>
+			{% endif %}
+			{% if object.accepted_answer_id == comment.pk %}
+			<div class="span-2 prepend-top" style="font-weight:bold;">
+				Accepted Answer
+			</div>
+			{% endif %}
+		</div>
+		<div class="span-15 last">
+			<div class="top span-15">
+				<div class="span-8">
+					<a class="comment-page-id" href="#comment-{{ forloop.counter }}" id="comment-{{ forloop.counter }}">#{{ forloop.counter }}</a> |
+					<a class="name" href="{% url profile comment.user.username %}">{% display_username comment.user %}</a> says...
+				</div>
+				<div class="span-7 last" style="text-align:right">
+					<font class="small">{{ comment.submit_date|date:"P" }} on {{ comment.submit_date|date:"F j, Y" }}
+					{% if perms.comments.change_comment %}| <a href="{% url admin:comments_app_comment_change comment.pk %}">Edit</a>{% endif %}
+					{% if perms.comments.delete_comment %}| <a href="{% url comments-delete comment.pk %}?next={{ object.get_absolute_url }}">Delete</a>{% endif %}</font>
+				</div>
+			</div>
+			<div class="prepend-top span-15">
+				{% wikify comment.comment %}
+			</div>
+		</div>
+	</div>
+	{% endif %}
+	{% endfor %}
+</div>
+<div class="span-3 last prepend-top prepend-1">
+	{% if comment_list|length > 3 %}
+	{% ad user "skyscraper" %}
+	{% else %}
+	{% ad user "small_box" %}
+	{% endif %}
+</div>
+{% endif %}
+{% if user.is_authenticated %}
+{% get_comment_form for object as form %}
+<div id="comment_form" class="span-24 prepend-top">
+	<div class="span-24">
+		<h2>{{ form.comment.label_tag }}</h2>
+	</div>
+	<form action="{% comment_form_target %}" method="post">{% csrf_token %}
+		<div class="span-10">
+			{% for field in form %}
+			{% if field.is_hidden %}
+			{{ field }}
+			{% endif %}
+			{% endfor %}
+			<p class="hide">{{ form.honeypot }}</p>
+			<p>{{ form.comment }}</p>
+			<input type="hidden" name="next" value="{{ object.get_absolute_url }}" />
+			<input type="submit" name="preview" value="Preview your answer!" />
+		</div>
+		<div class="span-10 prepend-1 last prepend-top">
+			<h3>Discussion options</h3>
+			<h4>{% subscription_toggle_link object user request.path %} to this discussion.</h4>
+			<h4><a href="/help-desk/#formatting">Formatting tips</a> (Become an expert!)</h4>
+			<p>Want to get really daring? Check out <a target="_new" href="http://daringfireball.net/projects/markdown/syntax">markdown syntax</a>.</p>
+		</div>
+	</form>
+</div>
+{% endif %}
+</div>

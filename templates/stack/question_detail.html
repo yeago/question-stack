@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load wiki_tags tapped_tags comments_plus_tags stack_tags %}
+{% block body %}
+<h2 class="snug">{{ instance.title }}</h2>
+<h4>Asked by {% display_username instance.comment.user %} {{ instance.comment.submit_date|timesince }} ago</h4>
+{% wikify instance.comment.comment %}
+{% endblock %}
+{% block bottom_stage %}
+{% render_answer_stage for instance %}
+{% endblock %}
