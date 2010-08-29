@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load tapped_tags %}
 {% block body %}
-<h2>MTG Q&AMP;A</h2>
+<h2>MTG Q&AMP;A{% if user.is_authenticated %}&mdash; <a href="{% url stack_question_add %}">Ask a question</a>{% endif %}</h2>
 {% for question in object_list %}
 {% with question.accepted_answer_id as answered %}
 <div class="span-24" style="vertical-align:top">
