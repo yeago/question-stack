@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load wiki_tags tapped_tags comments_plus_tags stack_tags %}
 {% block body %}
-<h2 class="snug">{{ instance.title }}</h2>
+<h2 class="snug">{{ instance.title }}{% if perms.stack.change_question %}<sup><a href="{% url admin:stack_question_change instance.pk %}">Edit</sup>{% endif %}</h2>
 <h4>Asked by {% display_username instance.comment.user %} {{ instance.comment.submit_date|timesince }} ago</h4>
 {% wikify instance.comment.comment %}
 {% endblock %}

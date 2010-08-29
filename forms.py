@@ -10,4 +10,4 @@ class QuestionForm(forms.ModelForm):
 
 	class Meta:
 		model = sm.Question
-		exclude = ['comment','slug']
+		exclude = ['comment','slug','accepted_answer']

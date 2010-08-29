@@ -14,7 +14,7 @@ class Question(models.Model):
 	title = models.CharField(max_length=250,verbose_name="Question")
 	slug = models.CharField(max_length=255)
 	view_count_cache = models.IntegerField(editable=False,default=0)
-	accepted_answer = models.ForeignKey(Comment,related_name="accepted_answers",null=True,editable=False)
+	accepted_answer = models.ForeignKey(Comment,related_name="accepted_answers",null=True,blank=True)
 
 	def __unicode__(self):
 		return self.title
