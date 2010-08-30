@@ -44,7 +44,7 @@
 	{% endif %}
 	{% endfor %}
 </div>
-<div class="span-3 last prepend-top prepend-1">
+<div class="span-3 last prepend-top">
 	{% if comment_list|length > 3 %}
 	{% ad user "skyscraper" %}
 	{% else %}
@@ -55,11 +55,9 @@
 {% if user.is_authenticated %}
 {% get_comment_form for object as form %}
 <div id="comment_form" class="span-24 prepend-top">
-	<div class="span-24">
-		<h2>{{ form.comment.label_tag }}</h2>
-	</div>
 	<form action="{% comment_form_target %}" method="post">{% csrf_token %}
 		<div class="span-10">
+			<h2 class="snug">Answer</h2>
 			{% for field in form %}
 			{% if field.is_hidden %}
 			{{ field }}

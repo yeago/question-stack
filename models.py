@@ -17,7 +17,7 @@ class Question(models.Model):
 	accepted_answer = models.ForeignKey(Comment,related_name="accepted_answers",null=True,blank=True)
 
 	def __unicode__(self):
-		return self.title
+		return self.title.replace("[[","").replace("]]","")
 
 	def get_response_count(self):
 		return Comment.objects.filter(content_type=ContentType.objects.get_for_model(self),object_pk=self.pk).count()
