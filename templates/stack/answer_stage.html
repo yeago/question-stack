@@ -13,10 +13,12 @@
 					{{ comment.karma__count }}{% if user.is_authenticated %}<a href="" class="comment-karma-add">+</a>{% endif %}
 				</span>
 			</div>
-			{% if user == object.comment.user and not object.accepted_answer_id == comment.pk %}
+			{% if user == object.comment.user or perms.stack.change_question %}
+			{% if not object.accepted_answer_id == comment.pk %}
 			<div class="span-2">
 				<a href="{% url stack_accepted_answer object.slug comment.pk %}">Make accepted answer</a>
 			</div>
+			{% endif %}
 			{% endif %}
 			{% if object.accepted_answer_id == comment.pk %}
 			<div class="span-2" style="font-weight:bold;">
