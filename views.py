@@ -56,7 +56,6 @@ def accepted_answer(request,slug,comment):
 	from django.contrib import comments
 
 	Comment = comments.get_model()
-
 	comment = get_object_or_404(Comment,pk=comment)
 	if not instance == comment.content_object:
 		raise Http404
