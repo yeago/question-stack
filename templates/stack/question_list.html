@@ -15,7 +15,7 @@
 	</div>
 	<div class="span-20 last">
 		<h2 class="snug">
-			<a style="text-decoration:none;" href="{{ question.get_absolute_url }}">{{ question.title }}</a>
+			<a style="text-decoration:none;" href="{{ question.get_absolute_url }}">{{ question }}</a>
 		</h2>
 		<p>
 			Asked {{ question.comment.submit_date|timesince }} ago by {% display_username question.comment.user_id %}

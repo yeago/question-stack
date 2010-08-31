@@ -61,7 +61,7 @@ def accepted_answer(request,slug,comment):
 	if not instance == comment.content_object:
 		raise Http404
 
-	if not request.user.has_perm('stack.change_question') or not request.user == instance.comment.user:
+	if not request.user.has_perm('stack.change_question') and not request.user == instance.comment.user:
 		raise Http404
 
 	if instance.accepted_answer:
