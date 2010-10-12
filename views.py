@@ -12,6 +12,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from django_view_count.models import View
 
+from django.contrib import comments
+
 from stack import models as sm
 from stack import forms as sf
 
@@ -19,7 +21,6 @@ def add(request):
 	form = sf.QuestionForm(request.POST or None,prefix="question")
 	if request.POST and form.is_valid():
 		instance = form.save()
-		from django.contrib import comments
 		CommentModel = comments.get_model()
 		user = request.user
 		if form.cleaned_data.get('username'):
@@ -42,18 +43,19 @@ def add(request):
 		context_instance=RequestContext(request))
 
 def question_list(request):
-	return object_list(request,sm.Question.objects.select_related('comment').order_by('-comment__submit_date'))
+	return object_list(request,sm.Question.objects.select_related(\
+		'accepted_answer','comment').order_by('-comment__submit_date'))
 
 def detail(request,slug):
 	instance = get_object_or_404(sm.Question,slug=slug)
+	CommentModel = comments.get_model()
+	responses = CommentModel.objects.for_model(instance).exclude(pk=instance.comment_id)
 	View.objects.create_for_instance(instance,request)
-	return render_to_response("stack/question_detail.html",{'instance': instance},\
+	return render_to_response("stack/question_detail.html",{'instance': instance, 'responses': responses},\
 		context_instance=RequestContext(request))
 
 def accepted_answer(request,slug,comment):
 	instance = get_object_or_404(sm.Question,slug=slug)
-
-	from django.contrib import comments
 
 	Comment = comments.get_model()
 	comment = get_object_or_404(Comment,pk=comment)
