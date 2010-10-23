@@ -17,8 +17,8 @@ from django.contrib import comments
 from stack import models as sm
 from stack import forms as sf
 
-def add(request):
-	form = sf.QuestionForm(request.POST or None,prefix="question")
+def add(request,form_class=sf.QuestionForm):
+	form = form_class(request.POST or None,prefix="question")
 	if request.POST and form.is_valid():
 		instance = form.save()
 		CommentModel = comments.get_model()

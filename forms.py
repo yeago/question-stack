@@ -11,3 +11,12 @@ class QuestionForm(forms.ModelForm):
 	class Meta:
 		model = sm.Question
 		exclude = ['comment','slug','accepted_answer']
+
+class AjaxQuestionForm(QuestionForm): # Optional
+	def __init__(self,*args,**kwargs):
+		super(AjaxQuestionForm,self).__init__(*args,**kwargs)
+		from ajax_select import fields as afields
+
+		# The above may fail, obviously, if you don't have ajax select
+		self.fields['title'] = afields.AutoCompleteField('question')
+		self.fields['title'].widget.attrs.update({'style': 'width:400px;font-size:18px'})
