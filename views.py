@@ -44,7 +44,7 @@ def add(request,form_class=sf.QuestionForm):
 
 def question_list(request):
 	return object_list(request,sm.Question.objects.select_related(\
-		'accepted_answer','comment').order_by('-comment__submit_date'))
+		'accepted_answer','comment').order_by('-comment__submit_date'),paginate_by=20,page=request.GET.get('p') or None)
 
 def detail(request,slug):
 	instance = get_object_or_404(sm.Question,slug=slug)
