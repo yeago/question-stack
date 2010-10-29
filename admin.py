@@ -22,7 +22,7 @@ def convert_to_forum(modeladmin,request, qs):
 		latest_post = None
 		if comments:
 			latest_post = list(comments)[-1]
-		t = Thread.objects.create(forum=f,title=q.title,latest_post=latest_post)
+		t = Thread.objects.create(forum=f,title=q.title,latest_post=latest_post,comment=q.comment)
 		comments.update(content_type=ct,object_pk=t.pk)
 		q.delete()
 		
