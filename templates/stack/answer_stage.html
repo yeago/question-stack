@@ -30,7 +30,7 @@
 			<div class="top span-15">
 				<div class="span-8">
 					<a class="comment-page-id" href="#comment-{{ forloop.counter }}" id="comment-{{ forloop.counter }}">#{{ forloop.counter }}</a> |
-					<a class="name" href="{% url profile comment.user.username %}">{% display_username comment.user %}</a> says...
+					{% display_username comment.user_id %} says...
 				</div>
 				<div class="span-7 last" style="text-align:right">
 					<font class="small">{{ comment.submit_date|date:"P" }} on {{ comment.submit_date|date:"F j, Y" }}
