@@ -31,7 +31,7 @@ class Question(models.Model):
 			self.generate_slug()
 		
 		if self.accepted_answer_id:
-			self.has_answer = True)
+			self.has_answer = True
 
 		from django.db import IntegrityError
 		while True:
