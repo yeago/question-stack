@@ -15,6 +15,7 @@ class Question(models.Model):
 	slug = models.CharField(max_length=255)
 	view_count_cache = models.IntegerField(editable=False,default=0)
 	accepted_answer = models.ForeignKey(Comment,related_name="accepted_answers",null=True,blank=True)
+	has_answer = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.title.replace("[[","").replace("]]","")
@@ -29,6 +30,9 @@ class Question(models.Model):
 		if not self.slug:
 			self.generate_slug()
 		
+		if self.accepted_answer_id:
+			self.has_answer = True)
+
 		from django.db import IntegrityError
 		while True:
 			try:
