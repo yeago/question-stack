@@ -13,7 +13,7 @@ class Question(models.Model):
 	rating = RatingField(can_change_vote=True,allow_anonymous=True,range=1,editable=False)
 	title = models.CharField(max_length=250,verbose_name="Question")
 	slug = models.CharField(max_length=255)
-	view_count_cache = models.IntegerField(editable=False,default=0)
+	viewse = models.IntegerField(editable=False,default=0,db_column="view_count_cache")
 	accepted_answer = models.ForeignKey(Comment,related_name="accepted_answers",null=True,blank=True)
 	has_answer = models.BooleanField(default=False)
 
