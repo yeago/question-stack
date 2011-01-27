@@ -16,3 +16,12 @@ class QuestionLookup(object):
 	def format_result(self,obj):
 		""" a more verbose display, used in the search results display.  may contain html and multi-lines """
 		return '<a href=\"%s\">%s</a>' % (obj.get_absolute_url(),obj)
+
+
+class QuestionHaystackLookup(QuestionLookup):
+	def get_query(self,q,request):
+		if not q or len(q) < 3:
+			return []
+
+		from haystack.query import SearchQuerySet
+		return Question.objects.filter(pk__in=[c.pk for c in SearchQuerySet().models(Question).auto_query(q)])

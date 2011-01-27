@@ -10,8 +10,6 @@ from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 
-from django_view_count.models import View
-
 from django.contrib import comments
 
 from stack import models as sm
@@ -50,7 +48,6 @@ def detail(request,slug):
 	instance = get_object_or_404(sm.Question,slug=slug)
 	CommentModel = comments.get_model()
 	responses = CommentModel.objects.for_model(instance).exclude(pk=instance.comment_id)
-	View.objects.create_for_instance(instance,request)
 	return render_to_response("stack/question_detail.html",{'instance': instance, 'responses': responses},\
 		context_instance=RequestContext(request))
 
