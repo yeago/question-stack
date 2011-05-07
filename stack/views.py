@@ -40,9 +40,14 @@ def add(request,form_class=sf.QuestionForm):
 	return render_to_response("stack/add.html",{'form': form, },\
 		context_instance=RequestContext(request))
 
+def home(request):
+	return render_to_response("stack/home.html", {"answered": sm.Question.objects.filter(has_answer=True),\
+		"unanswered": sm.Question.objects.filter(has_answer=False)},context_instance=RequestContext(request))
+
 def question_list(request):
 	return object_list(request,sm.Question.objects.select_related(\
-		'accepted_answer','comment').order_by('-comment__submit_date'),paginate_by=20,page=request.GET.get('p') or None)
+		'accepted_answer','comment').order_by('-comment__submit_date'),\
+		paginate_by=20,page=request.GET.get('p') or None)
 
 def detail(request,slug):
 	instance = get_object_or_404(sm.Question,slug=slug)
@@ -68,5 +73,6 @@ def accepted_answer(request,slug,comment):
 		messages.success(request,"Answer has been marked as accepted")
 
 	instance.accepted_answer = comment
+	instance.has_answer = True
 	instance.save()
 	return redirect(instance.get_absolute_url())

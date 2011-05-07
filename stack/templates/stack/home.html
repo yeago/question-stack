@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block submast %}
+<div class="span-16">
+	<h1 class="snug">MTG Q&AMP;A</h1>
+	<h2>Think you need a lawyer to understand MTG rules and errata? Think again!</h2>
+</div>
+<div class="span-8 last">
+	{% if user.is_authenticated %}<h1><a href="{% url stack_question_add %}">Ask a question</a></h1>{% endif %}
+	<h2><a href="{% url stack_question_list %}">View all questions</a></h2>
+</div>
+{% endblock %}
+{% block body %}
+{% if unanswered %}
+<h1>Unanswered Q&AMP;A</h1>
+{% for question in unanswered %}
+{% include "stack/question_snippet.html" %}
+{% endfor %}
+<hr />
+{% endif %}
+<h1>Recently Answered</h1>
+{% for question in answered|slice:":20" %}
+{% include "stack/question_snippet.html" %}
+{% endfor %}
+{% endblock %}

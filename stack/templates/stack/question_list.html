@@ -1,32 +1,7 @@
 {% extends "base.html" %}
-{% load tapped_tags %}
 {% block body %}
 <h2>MTG Q&AMP;A{% if user.is_authenticated %}&mdash; <a href="{% url stack_question_add %}">Ask a question</a>{% endif %}</h2>
 {% for question in object_list %}
-{% with question.accepted_answer_id as answered %}
-<div class="span-24" style="vertical-align:top">
-	<div class="span-2" style="text-align:center;">
-		<span style="font-size:25px">{{ question.get_response_count }}</span>
-		<br />Responses
-	</div>
-	<div class="span-2" style="text-align:center;">
-		<span style="font-size:25px;">{{ question.views }}</span>
-		<br />Views
-	</div>
-	<div class="span-20 last">
-		<h2 class="snug">
-			<a style="text-decoration:none;" href="{{ question.get_absolute_url }}">{{ question }}</a>
-		</h2>
-		<p>
-			Asked {{ question.comment.submit_date|timesince }} ago by {% display_username question.comment.user_id %}
-			{% if answered %}
-			<span style="color:green;">
-				Answered by {% display_username question.accepted_answer.user_id %}
-			</span>
-			{% endif %}
-		</p>
-	</div>
-</div>
-{% endwith %}
+{% include "stack/question_snippet.html" %}
 {% endfor %}
 {% endblock %}

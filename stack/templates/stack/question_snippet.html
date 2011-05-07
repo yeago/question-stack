@@ -1,0 +1,25 @@
+{% with question.accepted_answer_id as answered %}
+<div class="span-24" style="vertical-align:top">
+	<div class="span-2" style="text-align:center;">
+		<span style="font-size:25px">{{ question.get_response_count }}</span>
+		<br />Responses
+	</div>
+	<div class="span-2" style="text-align:center;">
+		<span style="font-size:25px;">{{ question.views }}</span>
+		<br />Views
+	</div>
+	<div class="span-20 last">
+		<h2 class="snug">
+			<a style="text-decoration:none;" href="{{ question.get_absolute_url }}">{{ question }}</a>
+		</h2>
+		<p>
+			Asked {{ question.comment.submit_date|timesince }} ago by {{ question.comment.user }}
+			{% if answered %}
+			<span style="color:green;">
+				Answered by {{ question.accepted_answer.user }}
+			</span>
+			{% endif %}
+		</p>
+	</div>
+</div>
+{% endwith %}
