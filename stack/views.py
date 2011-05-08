@@ -41,7 +41,8 @@ def add(request,form_class=sf.QuestionForm):
 		context_instance=RequestContext(request))
 
 def home(request):
-	return render_to_response("stack/home.html", {"answered": sm.Question.objects.filter(has_answer=True),\
+	return render_to_response("stack/home.html", {"answered": sm.Question.objects.filter(\
+		has_answer=True).order_by('-pk'),\
 		"unanswered": sm.Question.objects.filter(has_answer=False)},context_instance=RequestContext(request))
 
 def question_list(request):
