@@ -21,7 +21,7 @@ class Question(models.Model):
 		return self.title.replace("[[","").replace("]]","")
 
 	def get_response_count(self):
-		return Comment.objects.filter(content_type=ContentType.objects.get_for_model(self),object_pk=self.pk).count()
+		return Comment.objects.filter(content_type=ContentType.objects.get_for_model(self),object_pk=self.pk).count() - 1 # One is the actual question 
 
 	def get_absolute_url(self):
 		return reverse("stack_question_detail",args=[self.slug])
