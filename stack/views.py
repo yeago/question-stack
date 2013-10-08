@@ -2,9 +2,10 @@ from datetime import datetime
 
 from django.template import RequestContext
 from django.http import Http404
+from django.views.generic.list import ListView
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 
-from django.views.generic.list_detail import object_list
+from django.contrib.auth.models import User
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -45,10 +46,12 @@ def home(request):
 		has_answer=True).order_by('-pk'),\
 		"unanswered": sm.Question.objects.filter(has_answer=False)},context_instance=RequestContext(request))
 
-def question_list(request):
-	return object_list(request,sm.Question.objects.select_related(\
-		'accepted_answer','comment').order_by('-comment__submit_date'),\
-		paginate_by=20,page=request.GET.get('p') or None)
+
+class QuestionList(ListView):
+    paginate_by = 20
+    def get_queryset(self, **kwargs):
+        return sm.Question.objects.select_related(\
+		    'accepted_answer','comment').order_by('-comment__submit_date')
 
 def detail(request,slug):
 	instance = get_object_or_404(sm.Question,slug=slug)
