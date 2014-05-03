@@ -10,7 +10,7 @@ class QuestionForm(forms.ModelForm):
 
 	class Meta:
 		model = sm.Question
-		exclude = ['comment','slug','accepted_answer','has_answer']
+		exclude = ['comment','slug','accepted_answer','has_answer', 'site']
 
 class AjaxQuestionForm(QuestionForm): # Optional
 	def __init__(self,*args,**kwargs):
