@@ -40,7 +40,8 @@ def preview(request, form_class=sf.QuestionForm):
     Only allows a user to post a question if they're logged in.
     """
 
-    form = form_class(request.POST or None)
+    form = form_class(request.POST or None, prefix='question')
+
     if request.method == "POST" and form.is_valid():
         q = form.instance
         CommentModel = comments.get_model()
