@@ -50,13 +50,7 @@ def preview(request, form_class=sf.QuestionForm):
             user = User.objects.get(username=form.cleaned_data.get('username'))
 
         ct = ContentType.objects.get_for_model(q)
-        q.comment = CommentModel.objects.create(
-            comment=form.cleaned_data.get('comment'),
-            user=user,
-            content_type=ct,
-            object_pk=q.pk,
-            site=Site.objects.get_current(),
-            submit_date=form.cleaned_data.get('date', None) or datetime.now())
+
         if 'preview' in request.POST:
             return render_to_response('stack/preview.html',
                 RequestContext(request, {
@@ -64,11 +58,11 @@ def preview(request, form_class=sf.QuestionForm):
                     'question': q,
                     'comment': form.cleaned_data['comment'],
                     'user': user,
+                    'comment_submit_date': form.cleaned_data.get('date', None) or datetime.now(),
                     'preview_called': True
                 }))
         else:
             # No preview means we're ready to save the post.
-            q.comment = None
             q.save()
             q.comment = CommentModel.objects.create(
                 comment=form.cleaned_data.get('comment'),
