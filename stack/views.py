@@ -74,7 +74,6 @@ def preview(request, form_class=sf.QuestionForm):
 
             # No preview means we're ready to save the post.
             else:
-                import ipdb; ipdb.set_trace()
                 q.comment = None
                 q.save()
                 q.comment = CommentModel.objects.create(
