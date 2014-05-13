@@ -2,14 +2,14 @@
 {% block body %}
 <div class="span12">
     {% include "_form_errors.html" %}
-    <h1>{% trans "Question preview" %}</h1>
+    <h1>Question preview</h1>
     <div class="hero-unit">
         {% if question %}
-            <h1>{% wikify question.title %}</h1>
-            <h4>Asked by {{ question.comment.user }} {{ question.comment.submit_date|timesince }} ago</h4>
-            <h3> {% display_username user.id %}</h3>
+            <h1>{{ question.title }}</h1>
+            <h4>Asked by {{ user }} {{ comment_submit_date|timesince }} ago</h4>
+            <h3>{{user}}</h3>
         {% endif %}
-        {% if comment %}{% wikify comment %}{% endif %}
+        {% if comment %}{{ comment }}{% endif %}
 
     </div>
     <form action="./" method="post">{% csrf_token %}
@@ -24,9 +24,9 @@
             {% endif %}
         {% endfor %}
         {% if preview_called %}
-            <input type="submit" name="submit" class="btn " value="{% trans "Post" %}" />
+            <input type="submit" name="submit" class="btn " value=Post" />
         {% endif %}
-        <input type="submit" name="preview" class="btn" value="{% trans "Preview" %}" />
+        <input type="submit" name="preview" class="btn" value="Preview" />
     </form>
 </div>
 {% endblock %}
