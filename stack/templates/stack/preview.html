@@ -1,0 +1,32 @@
+{% extends base_template %}
+{% block body %}
+<div class="span12">
+    {% include "_form_errors.html" %}
+    <h1>Question preview</h1>
+    <div class="hero-unit">
+        {% if question %}
+            <h1>{{ question.title }}</h1>
+            <h4>Asked by {{ user }} {{ comment_submit_date|timesince }} ago</h4>
+            <h3>{{user}}</h3>
+        {% endif %}
+        {% if comment %}{{ comment }}{% endif %}
+
+    </div>
+    <form action="./" method="post">{% csrf_token %}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% else %}
+                {% if field.errors %} {{ field.errors }} {% endif %}
+                <p{% if field.errors %} class="error"{% endif %}{% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
+                    {{ field }}
+                </p>
+            {% endif %}
+        {% endfor %}
+        {% if preview_called %}
+            <input type="submit" name="submit" class="btn " value=Post" />
+        {% endif %}
+        <input type="submit" name="preview" class="btn" value="Preview" />
+    </form>
+</div>
+{% endblock %}
