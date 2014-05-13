@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -18,23 +19,18 @@ from django.contrib import comments
 from stack import models as sm
 from stack import forms as sf
 
-
 LOGIN_URL = getattr(settings, 'LOGIN_URL', '/accounts/login/')
 
 
+@login_required(login_url=LOGIN_URL)
 def add(request, form_class=sf.QuestionForm):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
-
-    if request.POST:
-        form = form_class(request.POST or None, prefix="question")
-    else:
-        form = form_class()
+    form = form_class(request.POST or None, prefix="question")
 
     return render_to_response('stack/add.html', {'form': form, },
                               context_instance=RequestContext(request))
 
 
+@login_required(login_url=LOGIN_URL)
 def preview(request, form_class=sf.QuestionForm):
     """
     Renders a preview of the new question and gives the user
@@ -43,18 +39,36 @@ def preview(request, form_class=sf.QuestionForm):
 
     Only allows a user to post a question if they're logged in.
     """
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
-    form = form_class(request.POST or None)
-    if request.method == "POST":
-        if form.is_valid():
-            q = form.instance
-            CommentModel = comments.get_model()
-            user = request.user
-            if form.cleaned_data.get('username'):
-                user = User.objects.get(username=form.cleaned_data.get('username'))
 
-            ct = ContentType.objects.get_for_model(q)
+    form = form_class(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        q = form.instance
+        CommentModel = comments.get_model()
+        user = request.user
+        if form.cleaned_data.get('username'):
+            user = User.objects.get(username=form.cleaned_data.get('username'))
+
+        ct = ContentType.objects.get_for_model(q)
+        q.comment = CommentModel.objects.create(
+            comment=form.cleaned_data.get('comment'),
+            user=user,
+            content_type=ct,
+            object_pk=q.pk,
+            site=Site.objects.get_current(),
+            submit_date=form.cleaned_data.get('date', None) or datetime.now())
+        if 'preview' in request.POST:
+            return render_to_response('stack/preview.html',
+                RequestContext(request, {
+                    'form': form,
+                    'question': q,
+                    'comment': form.cleaned_data['comment'],
+                    'user': user,
+                    'preview_called': True
+                }))
+        else:
+            # No preview means we're ready to save the post.
+            q.comment = None
+            q.save()
             q.comment = CommentModel.objects.create(
                 comment=form.cleaned_data.get('comment'),
                 user=user,
@@ -62,33 +76,10 @@ def preview(request, form_class=sf.QuestionForm):
                 object_pk=q.pk,
                 site=Site.objects.get_current(),
                 submit_date=form.cleaned_data.get('date', None) or datetime.now())
-            if 'preview' in request.POST:
-                return render_to_response('stack/preview.html',
-                    RequestContext(request, {
-                        'form': form,
-                        'question': q,
-                        'comment': form.cleaned_data['comment'],
-                        'user': user,
-                        'preview_called': True
-                    }))
+            q.save()
+            messages.success(request, "Question posted")
 
-            # No preview means we're ready to save the post.
-            else:
-                q.comment = None
-                q.save()
-                q.comment = CommentModel.objects.create(
-                    comment=form.cleaned_data.get('comment'),
-                    user=user,
-                    content_type=ct,
-                    object_pk=q.pk,
-                    site=Site.objects.get_current(),
-                    submit_date=form.cleaned_data.get('date', None) or datetime.now())
-                q.save()
-                messages.success(request, "Question posted")
-
-                return HttpResponseRedirect(q.get_absolute_url())
-    else:
-        form = form_class()
+            return HttpResponseRedirect(q.get_absolute_url())
     return render_to_response('stack/preview.html', {'form': form, },
                               context_instance=RequestContext(request))
 
