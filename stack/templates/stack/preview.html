@@ -25,7 +25,9 @@
                 </p>
             {% endif %}
         {% endfor %}
-        <input type="submit" name="submit" class="btn" value="{% trans "Post" %}" />
+        {% if preview_called %}
+            <input type="submit" name="submit" class="btn " value="{% trans "Post" %}" />
+        {% endif %}
         <input type="submit" name="preview" class="btn" value="{% trans "Preview" %}" />
     </form>
 </div>
