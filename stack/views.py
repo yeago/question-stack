@@ -52,7 +52,7 @@ class QuestionList(ListView):
     paginate_by = 20
     def get_queryset(self, **kwargs):
         return sm.Question.objects.filter(site=settings.SITE_ID).select_related(\
-            'accepted_answer','comment').order_by('-comment__submit_date')
+            ).order_by('-comment__submit_date')
 
 def detail(request,slug):
     instance = get_object_or_404(sm.Question,slug=slug, site=settings.SITE_ID)
