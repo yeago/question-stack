@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
 
@@ -116,6 +116,15 @@ def accepted_answer(request, slug, comment):
     else:
         messages.success(request,"Answer has been marked as accepted")
 
+    if request.user.has_perm('stack.change_question'):  # Admin therefore adminlog
+        LogEntry.objects.log_action(
+            request.user.pk,
+            ContentType.objects.get_for_model(instance).pk,
+            instance.pk,
+            '%s' % instance,
+            CHANGE,
+            "from [%s] to [%s]" % (instance.accepted_answer, comment)
+        )
     instance.accepted_answer = comment
     instance.has_answer = True
     instance.save()
