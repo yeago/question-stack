@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 
-from django_comments import get_model
+import django_comments
 
 from stack import models as sm
 from stack import forms as sf
@@ -45,7 +45,7 @@ def preview(request, form_class=sf.QuestionForm):
 
     if request.method == "POST" and form.is_valid():
         q = form.instance
-        CommentModel = get_model()
+        CommentModel = django_comments.get_model()
         user = request.user
         if form.cleaned_data.get('username'):
             user = User.objects.get(username=form.cleaned_data.get('username'))
@@ -95,7 +95,7 @@ class QuestionList(ListView):
 
 def detail(request, slug):
     instance = get_object_or_404(sm.Question,slug=slug, site=settings.SITE_ID)
-    CommentModel = get_model()
+    CommentModel = django_comments.get_model()
     responses = CommentModel.objects.for_model(instance).exclude(pk=instance.comment_id)
     return render_to_response("stack/question_detail.html",{'instance': instance, 'responses': responses},\
         context_instance=RequestContext(request))
@@ -104,7 +104,7 @@ def detail(request, slug):
 def accepted_answer(request, slug, comment):
     instance = get_object_or_404(sm.Question,slug=slug, site=settings.SITE_ID)
 
-    Comment = get_model()
+    Comment = django_comments.get_model()
     comment = get_object_or_404(Comment,pk=comment)
     if not instance == comment.content_object:
         raise Http404
