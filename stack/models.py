@@ -1,13 +1,13 @@
 from django.db import models
-from django.contrib import comments
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 
+import django_comments
 from djangoratings.fields import RatingField
 from slugify import SlugifyUniquely
 
-Comment = comments.get_model()
+Comment = django_comments.get_model()
 
 class Question(models.Model):
     site = models.ForeignKey('sites.Site')
