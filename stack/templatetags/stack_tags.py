@@ -2,7 +2,7 @@ from django import template
 from django.template.loader import render_to_string
 from django.db.models import Count
 # This next import is available at http://github.com/subsume/django-comment-plus
-from comments_plus.templatetags import comments_plus_tags as tt
+from tapped.base.templatetags import comments_plus_tags as tt
 
 from stack import models as sm
 
