@@ -1,0 +1,1 @@
+-e git@github.com:yeago/django-comment-plus.git#egg=commentsplus

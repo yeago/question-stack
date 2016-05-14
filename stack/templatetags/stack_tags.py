@@ -1,8 +1,6 @@
 from django import template
 from django.db.models import Count
-# This next import is available at http://github.com/subsume/django-comment-plus
-from tapped.base.templatetags import comments_plus_tags as tt
-
+from comments_plus.templatetags import comments_plus_tags as tt
 from stack import models as sm
 
 register = template.Library()
