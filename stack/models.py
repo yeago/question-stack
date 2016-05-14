@@ -9,37 +9,40 @@ from slugify import SlugifyUniquely
 
 Comment = django_comments.get_model()
 
+
 class Question(models.Model):
     site = models.ForeignKey('sites.Site')
-    comment = models.OneToOneField(Comment,null=True) # Null because it needs to be saved first
-    rating = RatingField(can_change_vote=True,allow_anonymous=True,range=1,editable=False)
-    title = models.CharField(max_length=250,verbose_name="Question")
+    comment = models.OneToOneField(Comment, null=True) # Null because it needs to be saved first
+    rating = RatingField(can_change_vote=True, allow_anonymous=True, range=1, editable=False)
+    title = models.CharField(max_length=250, verbose_name="Question")
     slug = models.CharField(max_length=255)
-    views = models.IntegerField(editable=False,default=0,db_column="view_count_cache")
-    accepted_answer = models.ForeignKey(Comment,related_name="accepted_answers",null=True,blank=True)
+    views = models.IntegerField(editable=False, default=0, db_column="view_count_cache")
+    accepted_answer = models.ForeignKey(Comment, related_name="accepted_answers", null=True, blank=True)
     has_answer = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return self.title.replace("[[","").replace("]]","")
+        return self.title.replace("[[", "").replace("]]", "")
 
     def get_response_count(self):
-        return Comment.objects.filter(content_type=ContentType.objects.get_for_model(self),object_pk=self.pk).count() - 1 # One is the actual question 
+        return Comment.objects.filter(
+            content_type=ContentType.objects.get_for_model(self),
+            object_pk=self.pk).count() - 1  # One is the actual question
 
     def get_absolute_url(self):
-        return reverse("stack_question_detail",args=[self.slug])
+        return reverse("stack_question_detail", args=[self.slug])
 
-    def save(self,*args,**kwargs):
+    def save(self, *args, **kwargs):
         self.site = Site.objects.get_current()
         if not self.slug:
             self.generate_slug()
-        
+
         if self.accepted_answer_id:
             self.has_answer = True
 
         from django.db import IntegrityError
         while True:
             try:
-                super(Question,self).save(*args,**kwargs)
+                super(Question, self).save(*args, **kwargs)
                 return
             except IntegrityError:
                 self.generate_slug()
