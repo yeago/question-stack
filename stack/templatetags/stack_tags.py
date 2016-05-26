@@ -22,7 +22,5 @@ register.tag(get_answer_list)
 
 @register.simple_tag(takes_context=True)
 def render_answer_stage(context, instance, *args, **kwargs):
-    kwargs['templates'] = [
-        "stack/answer_stage.html"
-    ]
+    kwargs['template'] = "stack/answer_stage.html"
     return tt.render_comment_stage(context, instance, *args, **kwargs)
