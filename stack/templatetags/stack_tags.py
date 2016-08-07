@@ -1,12 +1,14 @@
 from django import template
 from django.db.models import Count
-from comments_plus.templatetags import comments_plus_tags as tt
+from comments_plus.templatetags.comments_plus_tags import render_comment_stage
 from stack import models as sm
+from django_comments.templatetags.comments import BaseCommentNode
+
 
 register = template.Library()
 
 
-class KarmaCommentListNode(tt.KarmaCommentListNode):
+class KarmaCommentListNode(BaseCommentNode):
     """Insert a list of comments into the context."""
     def get_context_value_from_queryset(self, context, qs):
         question_pk = self.get_target_ctype_pk(context)
@@ -25,4 +27,4 @@ def render_answer_stage(context, instance, *args, **kwargs):
     kwargs['templates'] = [
         "stack/answer_stage.html"
     ]
-    return tt.render_comment_stage(context, instance, *args, **kwargs)
+    return render_comment_stage(context, instance, *args, **kwargs)
