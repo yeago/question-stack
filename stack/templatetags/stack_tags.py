@@ -8,7 +8,7 @@ from django_comments.templatetags.comments import BaseCommentNode
 register = template.Library()
 
 
-class KarmaCommentListNode(BaseCommentNode):
+class CommentListNode(BaseCommentNode):
     """Insert a list of comments into the context."""
     def get_context_value_from_queryset(self, context, qs):
         question_pk = self.get_target_ctype_pk(context)
@@ -17,14 +17,12 @@ class KarmaCommentListNode(BaseCommentNode):
 
 
 def get_answer_list(parser, token):
-    return KarmaCommentListNode.handle_token(parser, token)
+    return CommentListNode.handle_token(parser, token)
 
 register.tag(get_answer_list)
 
 
 @register.simple_tag(takes_context=True)
 def render_answer_stage(context, instance, *args, **kwargs):
-    kwargs['templates'] = [
-        "stack/answer_stage.html"
-    ]
+    kwargs['template'] = "stack/answer_stage.html"
     return render_comment_stage(context, instance, *args, **kwargs)
