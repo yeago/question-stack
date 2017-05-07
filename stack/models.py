@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
@@ -12,13 +13,14 @@ Comment = django_comments.get_model()
 
 class Question(models.Model):
     site = models.ForeignKey('sites.Site')
-    comment = models.OneToOneField(Comment, null=True) # Null because it needs to be saved first
+    comment = models.OneToOneField(Comment, null=True)  # Null because it needs to be saved first
     rating = RatingField(can_change_vote=True, allow_anonymous=True, range=1, editable=False)
     title = models.CharField(max_length=250, verbose_name="Question")
     slug = models.CharField(max_length=255)
     views = models.IntegerField(editable=False, default=0, db_column="view_count_cache")
     accepted_answer = models.ForeignKey(Comment, related_name="accepted_answers", null=True, blank=True)
     has_answer = models.BooleanField(default=False)
+    closed = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.title.replace("[[", "").replace("]]", "")
@@ -39,7 +41,6 @@ class Question(models.Model):
         if self.accepted_answer_id:
             self.has_answer = True
 
-        from django.db import IntegrityError
         while True:
             try:
                 super(Question, self).save(*args, **kwargs)
