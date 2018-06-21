@@ -1,11 +1,10 @@
 from datetime import datetime
 from django.contrib.admin.models import LogEntry, CHANGE
 
-from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
 
 from django.views.generic.list import ListView
-from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -27,8 +26,7 @@ LOGIN_URL = getattr(settings, 'LOGIN_URL', '/accounts/login/')
 def add(request, form_class=sf.QuestionForm):
     form = form_class(request.POST or None, prefix="question")
 
-    return render_to_response('stack/add.html', {'form': form, },
-                              context_instance=RequestContext(request))
+    return render(request, 'stack/add.html', {'form': form, })
 
 
 @login_required(login_url=LOGIN_URL)
@@ -53,15 +51,17 @@ def preview(request, form_class=sf.QuestionForm):
         ct = ContentType.objects.get_for_model(q)
 
         if 'preview' in request.POST:
-            return render_to_response('stack/preview.html',
-                RequestContext(request, {
+            return render(
+                request,
+                'stack/preview.html',
+                {
                     'form': form,
                     'question': q,
                     'comment': form.cleaned_data['comment'],
                     'user': user,
                     'comment_submit_date': form.cleaned_data.get('date', None) or datetime.now(),
                     'preview_called': True
-                }))
+                })
         else:
             # No preview means we're ready to save the post.
             q.save()
@@ -76,14 +76,15 @@ def preview(request, form_class=sf.QuestionForm):
             messages.success(request, "Question posted")
 
             return HttpResponseRedirect(q.get_absolute_url())
-    return render_to_response('stack/preview.html', {'form': form, },
-                              context_instance=RequestContext(request))
+    return render(request, 'stack/preview.html', {'form': form})
 
 
 def home(request):
-    return render_to_response("stack/home.html", {"answered": sm.Question.objects.filter(site=settings.SITE_ID,\
-        has_answer=True).order_by('-pk'),\
-        "unanswered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=False)},context_instance=RequestContext(request))
+    return render(
+        request,
+        "stack/home.html",
+        {"answered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=True).order_by('-pk'),
+         "unanswered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=False)})
 
 
 class QuestionList(ListView):
@@ -97,8 +98,7 @@ def detail(request, slug):
     instance = get_object_or_404(sm.Question,slug=slug, site=settings.SITE_ID)
     CommentModel = django_comments.get_model()
     responses = CommentModel.objects.for_model(instance).exclude(pk=instance.comment_id)
-    return render_to_response("stack/question_detail.html",{'instance': instance, 'responses': responses},\
-        context_instance=RequestContext(request))
+    return render(request, "stack/question_detail.html", {'instance': instance, 'responses': responses})
 
 
 def accepted_answer(request, slug, comment):
