@@ -12,13 +12,13 @@ Comment = django_comments.get_model()
 
 
 class Question(models.Model):
-    site = models.ForeignKey('sites.Site')
-    comment = models.OneToOneField(Comment, null=True)  # Null because it needs to be saved first
+    site = models.ForeignKey('sites.Site', on_delete=models.PROTECT)
+    comment = models.OneToOneField(Comment, on_delete=models.CASCADE, null=True)  # Null because it needs to be saved first
     rating = RatingField(can_change_vote=True, allow_anonymous=True, range=1, editable=False)
     title = models.CharField(max_length=250, verbose_name="Question")
     slug = models.CharField(max_length=255)
     views = models.IntegerField(editable=False, default=0, db_column="view_count_cache")
-    accepted_answer = models.ForeignKey(Comment, related_name="accepted_answers", null=True, blank=True)
+    accepted_answer = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="accepted_answers", null=True, blank=True)
     has_answer = models.BooleanField(default=False)
     closed = models.BooleanField(default=False)
 
