@@ -20,9 +20,9 @@ class Migration(migrations.Migration):
             name='Question',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=250, verbose_name=b'Question')),
+                ('title', models.CharField(max_length=250, verbose_name='Question')),
                 ('slug', models.CharField(max_length=255)),
-                ('views', models.IntegerField(db_column=b'view_count_cache', default=0, editable=False)),
+                ('views', models.IntegerField(db_column='view_count_cache', default=0, editable=False)),
                 ('has_answer', models.BooleanField(default=False)),
                 ('rating_votes', models.PositiveIntegerField(blank=True, default=0, editable=False)),
                 ('rating_score', models.IntegerField(blank=True, default=0, editable=False)),
