@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -6,9 +7,66 @@ from django.contrib.sites.models import Site
 
 import django_comments
 from djangoratings.fields import RatingField
-from slugify import SlugifyUniquely
 
 Comment = django_comments.get_model()
+
+
+def SlugifyUniquely(value, model, slugfield="slug"):
+    """Returns a slug on a name which is unique within a model's table
+
+    This code suffers a race condition between when a unique
+    slug is determined and when the object with that slug is saved.
+    It's also not exactly database friendly if there is a high
+    likelyhood of common slugs being attempted.
+
+    A good usage pattern for this code would be to add a custom save()
+    method to a model with a slug field along the lines of:
+
+    from django.template.defaultfilters import slugify
+
+    def save(self):
+    if not self.id:
+    # replace self.name with your prepopulate_from field
+    self.slug = SlugifyUniquely(self.name, self.__class__)
+    super(self.__class__, self).save()
+
+    Original pattern discussed at
+    http://www.b-list.org/weblog/2006/11/02/django-tips-auto-populated-fields
+    """
+
+    max_length = model._meta.get_field(slugfield).max_length
+    potential = base = slugify(value)
+    date = datetime.date.today().strftime("%d-%m-%y")
+
+    for attempt in xrange(SLUGIFY_MAX_ATTEMPTS):
+        old_potential = potential
+        random_suffix = random_suffix_generator()
+        try:
+            # For the first try (0) just use the base
+            # For the next 5 tries, just add a number
+            if 5 > attempt > 0:
+                potential = '%s-%s' % (base[:max_length - 2], attempt)
+            # One try with just the date
+            if attempt == 5:
+                potential = '%s-%s' % (date, base)
+            # Everything else failed,
+            # use the date plus a random suffix for the rest
+            elif attempt > 5:
+                potential = '%s-%s-%s' % (date, random_suffix, base)
+
+            # Cut it to the max length of the model slug field.
+            potential = potential[:max_length]
+            model.objects.get(**{slugfield: potential})
+
+            if attempt > 0 and potential == old_potential:
+                # Then, the next iteration will be the same, just stop.
+                raise Exception("SlugifyUnique: not able to generate an unique slug. (%s)" % potential)
+        except model.DoesNotExist:
+            # Good, we found one.
+            return potential
+
+    # Oh noo! Max attempts reached.
+    raise Exception("SlugifyUnique: Max attempts reached. (%s) last value: %s" % (SLUGIFY_MAX_ATTEMPTS, potential))
 
 
 class Question(models.Model):
