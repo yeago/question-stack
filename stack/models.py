@@ -83,6 +83,9 @@ class Question(models.Model):
     def __unicode__(self):
         return self.title.replace("[[", "").replace("]]", "")
 
+    def __str__(self):
+        return self.title.replace("[[", "").replace("]]", "")
+
     def get_response_count(self):
         return Comment.objects.filter(
             content_type=ContentType.objects.get_for_model(self),
