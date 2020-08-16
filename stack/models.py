@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 from django.template.defaultfilters import slugify
 from django.db import IntegrityError
 from django.urls import reverse
@@ -33,7 +34,16 @@ def SlugifyUniquely(value, model, slugfield="slug"):
     Original pattern discussed at
     http://www.b-list.org/weblog/2006/11/02/django-tips-auto-populated-fields
     """
-
+    def random_suffix_generator(size=MAX_SUFFIX_LENGTH, chars=SUFFIX_CHARS):
+        """
+        Generates a random string of length determined by size and using the
+        alphabet indicated by chars.
+        """
+        return ''.join(random.choice(chars) for i in range(size))
+    
+    MAX_SUFFIX_LENGTH = getattr(settings, 'MAX_SUFFIX_LENGTH', 3)
+    SUFFIX_CHARS = getattr(settings, 'SUFFIX_CHARS', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    SLUGIFY_MAX_ATTEMPTS = getattr(settings, 'SLUGIFY_MAX_ATTEMPTS', 250)
     max_length = model._meta.get_field(slugfield).max_length
     potential = base = slugify(value)
     date = datetime.date.today().strftime("%d-%m-%y")
