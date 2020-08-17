@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
-
+from django.conf import settings
 import django_comments
 from djangoratings.fields import RatingField
 
