@@ -49,7 +49,7 @@ def SlugifyUniquely(value, model, slugfield="slug"):
         """
         return ''.join(random.choice(chars) for i in range(size))
     
-    for attempt in xrange(SLUGIFY_MAX_ATTEMPTS):
+    for attempt in range(SLUGIFY_MAX_ATTEMPTS):
         old_potential = potential
         random_suffix = random_suffix_generator()
         try:
