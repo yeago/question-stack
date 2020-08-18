@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+import random
 from django.template.defaultfilters import slugify
 from django.db import IntegrityError
 from django.urls import reverse
