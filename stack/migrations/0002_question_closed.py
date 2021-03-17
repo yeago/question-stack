@@ -4,16 +4,11 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 
-from django.conf import settings
-
-default_dep = ('django_comments', '0001')
-
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('stack', '0001_initial'),
-        getattr(settings, "STACK_COMMENTS_APP_MIGRATION_DEPENDENCY", default_dep),
     ]
 
     operations = [
@@ -22,8 +17,4 @@ class Migration(migrations.Migration):
             name='closed',
             field=models.BooleanField(default=False),
         ),
-        migrations.AddField(
-            model_name='question',
-            name='comment',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='comments_app.TappedComment')),
     ]
