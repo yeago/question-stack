@@ -4,14 +4,17 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
+from django.conf import settings
 
+
+default_dep = ('django_comments', '0001')
 
 class Migration(migrations.Migration):
 
     initial = True
 
     dependencies = [
-        ('comments_app', '0003_auto_20151219_0403'),
+        getattr(settings, "STACK_COMMENTS_APP_MIGRATION_DEPENDENCY", default_dep),
         ('sites', '0002_alter_domain_unique'),
     ]
 
