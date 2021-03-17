@@ -4,17 +4,13 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-from django.conf import settings
 
-
-default_dep = ('django_comments', '0001')
 
 class Migration(migrations.Migration):
 
     initial = True
 
     dependencies = [
-        getattr(settings, "STACK_COMMENTS_APP_MIGRATION_DEPENDENCY", default_dep),
         ('sites', '0002_alter_domain_unique'),
     ]
 
@@ -30,7 +26,6 @@ class Migration(migrations.Migration):
                 ('rating_votes', models.PositiveIntegerField(blank=True, default=0, editable=False)),
                 ('rating_score', models.IntegerField(blank=True, default=0, editable=False)),
                 ('accepted_answer', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='accepted_answers', to='comments_app.TappedComment')),
-                ('comment', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='comments_app.TappedComment')),
                 ('site', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sites.Site')),
             ],
         ),
