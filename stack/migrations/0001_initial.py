@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-::port django.db.models.deletion
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -25,6 +25,7 @@ class Migration(migrations.Migration):
                 ('has_answer', models.BooleanField(default=False)),
                 ('rating_votes', models.PositiveIntegerField(blank=True, default=0, editable=False)),
                 ('rating_score', models.IntegerField(blank=True, default=0, editable=False)),
+                ('accepted_answer', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='accepted_answers', to='comments_app.TappedComment')),
                 ('site', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sites.Site')),
             ],
         ),

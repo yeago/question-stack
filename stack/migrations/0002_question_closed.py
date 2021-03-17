@@ -5,8 +5,6 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 from django.conf import settings
-import django.db.models.deletion
-
 
 default_dep = ('django_comments', '0001')
 
@@ -26,12 +24,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='question',
-            name='accepted_answer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='accepted_answers', to='comments_app.TappedComment')
-        ),
-        migrations.AddField(
-            model_name='question',
             name='comment',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='comments_app.TappedComment')
-),
+            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='comments_app.TappedComment')),
     ]
