@@ -7,14 +7,12 @@ import django.db.models.deletion
 from django.conf import settings
 
 
-default_dep = ('django_comments', '0001')
-
 class Migration(migrations.Migration):
 
     initial = True
 
     dependencies = [
-        getattr(settings, "STACK_COMMENTS_APP_MIGRATION_DEPENDENCY", default_dep),
+        migrations.swappable_dependency(settings.COMMENTS_MODEL),
         ('sites', '0002_alter_domain_unique'),
     ]
 
@@ -29,8 +27,8 @@ class Migration(migrations.Migration):
                 ('has_answer', models.BooleanField(default=False)),
                 ('rating_votes', models.PositiveIntegerField(blank=True, default=0, editable=False)),
                 ('rating_score', models.IntegerField(blank=True, default=0, editable=False)),
-                ('accepted_answer', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='accepted_answers', to='comments_app.TappedComment')),
-                ('comment', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='comments_app.TappedComment')),
+                ('accepted_answer', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='accepted_answers', to=settings.COMMENTS_MODEL)),
+                ('comment', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.COMMENTS_MODEL)),
                 ('site', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sites.Site')),
             ],
         ),
