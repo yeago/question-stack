@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        getattr(settings, "STACK_COMMENTS_APP_MIGRATION_DEPENDENCY", default_dep),
+        # getattr(settings, "STACK_COMMENTS_APP_MIGRATION_DEPENDENCY", default_dep),
         ('sites', '0002_alter_domain_unique'),
     ]
 
