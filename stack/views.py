@@ -84,8 +84,8 @@ def home(request):
     return render(
         request,
         "stack/home.html",
-        {"answered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=True).order_by('-pk'),
-         "unanswered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=False)})
+        {"answered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=True, comment__isnull=False).order_by('-pk'),
+         "unanswered": sm.Question.objects.filter(site=settings.SITE_ID, has_answer=False, comment__isnull=False)})
 
 
 class QuestionList(ListView):
