@@ -1,4 +1,5 @@
 from datetime import datetime
+from django import forms
 from django.contrib.admin.models import LogEntry, CHANGE
 
 from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
@@ -64,14 +65,14 @@ def preview(request, form_class=sf.QuestionForm):
                 })
         else:
             # No preview means we're ready to save the post.
-            q.save()
-            q.comment = CommentModel.objects.create(
+            comment = CommentModel.objects.create(
                 comment=form.cleaned_data.get('comment'),
                 user=user,
                 content_type=ct,
                 object_pk=q.pk,
                 site=Site.objects.get_current(),
                 submit_date=form.cleaned_data.get('date', None) or datetime.now())
+            q.comment = comment
             q.save()
             messages.success(request, "Question posted")
 
@@ -90,7 +91,7 @@ def home(request):
 class QuestionList(ListView):
     paginate_by = 20
     def get_queryset(self, **kwargs):
-        return sm.Question.objects.filter(site=settings.SITE_ID).select_related(\
+        return sm.Question.objects.filter(comment__isnull=False, site=settings.SITE_ID).select_related(\
             ).order_by('-comment__submit_date')
 
 
