@@ -62,9 +62,9 @@ def preview(request, form_class=sf.QuestionForm):
                     'preview_called': True
                 })
         else:
-            q = form.save()
-            ct = ContentType.objects.get_for_model(q)
             # No preview means we're ready to save the post.
+            ct = ContentType.objects.get_for_model(q)
+            q = form.save()
             comment = CommentModel.objects.create(
                 comment=form.cleaned_data.get('comment'),
                 user=user,
