@@ -49,8 +49,6 @@ def preview(request, form_class=sf.QuestionForm):
         if form.cleaned_data.get('username'):
             user = User.objects.get(username=form.cleaned_data.get('username'))
 
-        ct = ContentType.objects.get_for_model(q)
-
         if 'preview' in request.POST:
             return render(
                 request,
@@ -65,6 +63,8 @@ def preview(request, form_class=sf.QuestionForm):
                 })
         else:
             # No preview means we're ready to save the post.
+            ct = ContentType.objects.get_for_model(q)
+            q = form.save()
             comment = CommentModel.objects.create(
                 comment=form.cleaned_data.get('comment'),
                 user=user,
